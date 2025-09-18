@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Fake Profile Detection</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQml-IJTHh53TPdxWiAV24RdWOB1nrDr1GYLA&s');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: scroll;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Instagram Fake Profile Detection</h1>
+        <button onclick="navigateTo('index.html')" class="back-btn">Back to Home</button>
+    </header>
+
+    <section class="profile-preview">
+        <div class="profile-card">
+            <img id="profile-image" src="/api/placeholder/150/150" alt="Profile Picture" class="profile-pic">
+            <h2 id="username">cristiano</h2>
+            <div class="profile-stats">
+                <div>
+                    <strong id="posts-count">0</strong>
+                    <span>Posts</span>
+                </div>
+                <div>
+                    <strong id="followers-count">0</strong>
+                    <span>Followers</span>
+                </div>
+                <div>
+                    <strong id="following-count">0</strong>
+                    <span>Following</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="input-section">
+        <form id="profile-form">
+            <label for="dp">Does the account have a profile picture?</label>
+            <select id="dp" required onchange="updatePreview()">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+
+            <label for="username-input">Username:</label>
+            <input type="text" id="username-input" onchange="updatePreview()" required>
+
+            <label for="posts">Number of posts:</label>
+            <input type="number" id="posts" onchange="updatePreview()" required min="0">
+
+            <label for="followers">Number of followers:</label>
+            <input type="number" id="followers" onchange="updatePreview()" required min="0">
+
+            <label for="following">Number of following:</label>
+            <input type="number" id="following" onchange="updatePreview()" required min="0">
+
+            <label for="last-login">Last login (in days ago):</label>
+            <input type="number" id="last-login" required min="0">
+
+            <button type="button" onclick="validateAndCalculateProfile()">Calculate Profile Authenticity</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>Developed by Our Team</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        function validateAndCalculateProfile() {
+            const dp = document.getElementById("dp").value;
+            const username = document.getElementById("username-input").value;
+            const posts = document.getElementById("posts").value;
+            const followers = document.getElementById("followers").value;
+            const following = document.getElementById("following").value;
+            const lastLogin = document.getElementById("last-login").value;
+
+            // Ensure all fields are filled
+            if (!dp || !username || !posts || !followers || !following || !lastLogin) {
+                alert("Please fill in all the fields.");
+                return;
+            }
+
+            // Calculate profile authenticity
+            const authenticity = calculateProfile();
+
+            // Save user data to localStorage
+            const userData = {
+                dp,
+                username,
+                posts,
+                followers,
+                following,
+                lastLogin,
+                authenticity
+            };
+            localStorage.setItem("latestUserData", JSON.stringify(userData));
+
+            // Navigate to result.html
+            navigateTo("result.html");
+        }
+    </script>
+</body>
+
+</html>

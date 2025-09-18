@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="admin-index.html">Home</a></li>
+                <li><a href="user-data.html">User Data</a></li>
+                <li><a href="prediction-results.html">Prediction Results</a></li>
+                <li><a href="login-navigator.html">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="dashboard-stats">
+            <h1 class="dashboard-title">User Analytics Dashboard</h1>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-title">TOTAL USERS</div>
+                    <div class="stat-value" id="total-users">0</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 80%;"></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">REAL USERS</div>
+                    <div class="stat-value" id="real-users">0</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 60%;"></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">FAKE USER</div>
+                    <div class="stat-value" id="fake-users">0</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 40%;"></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">ACTIVE USERS</div>
+                    <div class="stat-value" id="active-users">0</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 50%;"></div>
+                    </div>
+                </div>
+            </div>
+            <button class="reset-btn" onclick="resetDashboard()">Reset Dashboard</button>
+        </div>
+        <section>
+            <h2>Dashboard</h2>
+            <p>Visualize user data trends and behaviors here.</p>
+        </section>
+    </main>
+    <script>
+        function loadDashboardData() {
+            const userDataStack = JSON.parse(localStorage.getItem("userData")) || [];
+
+            // Initialize counts
+            let totalUsers = 0;
+            let realUsers = 0;
+            let fakeUsers = 0;
+
+            // Calculate counts based on userDataStack
+            userDataStack.forEach(data => {
+                totalUsers++;
+                if (data.Value === 1) {
+                    realUsers++;
+                } else {
+                    fakeUsers++;
+                }
+            });
+
+            // Active Users is the same as Real Users
+            const activeUsers = realUsers;
+
+            // Update the dashboard values
+            document.getElementById("total-users").textContent = totalUsers;
+            document.getElementById("real-users").textContent = realUsers;
+            document.getElementById("fake-users").textContent = fakeUsers;
+            document.getElementById("active-users").textContent = activeUsers;
+
+            // Store the values in localStorage for easy access in prediction-results.html
+            localStorage.setItem("totalUsers", totalUsers);
+            localStorage.setItem("realUsers", realUsers);
+            localStorage.setItem("fakeUsers", fakeUsers);
+            localStorage.setItem("activeUsers", activeUsers);
+        }
+
+        // Reset all dashboard values to zero
+        function resetDashboard() {
+            localStorage.removeItem("userData");
+            localStorage.setItem("totalUsers", "0");
+            localStorage.setItem("realUsers", "0");
+            localStorage.setItem("fakeUsers", "0");
+            localStorage.setItem("activeUsers", "0");
+            loadDashboardData();
+            alert("Dashboard has been reset!");
+        }
+
+        // Call the function to load data on page load
+        window.onload = loadDashboardData;
+    </script>
+</body>
+</html>

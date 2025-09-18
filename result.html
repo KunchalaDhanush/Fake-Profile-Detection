@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Authenticity Analysis</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5bJGZHYvVp00Mbj3ZGw8Nrju5MGvsUDXPcw&s');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Profile Authenticity Report</h1>
+        <button onclick="navigateTo('instagram.html')" class="back-btn">Back to Analysis</button>
+    </header>
+
+    <section class="result-container">
+        <div class="profile-summary">
+            <img id="profile-image" src="/api/placeholder/200/200" alt="Profile Picture" class="result-profile-pic">
+            <h2 id="username">username_example</h2>
+            
+            <div class="authenticity-gauge">
+                <div class="gauge-label">Profile Authenticity</div>
+                <div class="gauge">
+                    <div id="authenticity-indicator" class="gauge-fill"></div>
+                </div>
+                <div id="authenticity-percentage" class="gauge-percentage">50%</div>
+            </div>
+        </div>
+
+        <div class="detailed-analysis">
+            <h3>Detailed Breakdown</h3>
+            <div class="analysis-factors">
+                <div class="factor">
+                    <span class="factor-name">Profile Picture</span>
+                    <span id="dp-status" class="factor-result">Not Verified</span>
+                </div>
+                <div class="factor">
+                    <span class="factor-name">Posts</span>
+                    <span id="posts-status" class="factor-result">0 Posts</span>
+                </div>
+                <div class="factor">
+                    <span class="factor-name">Followers</span>
+                    <span id="followers-status" class="factor-result">0 Followers</span>
+                </div>
+                <div class="factor">
+                    <span class="factor-name">Following</span>
+                    <span id="following-status" class="factor-result">0 Following</span>
+                </div>
+                <div class="factor">
+                    <span class="factor-name">Last Login</span>
+                    <span id="login-status" class="factor-result">Not Analyzed</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="risk-assessment">
+            <h3>Risk Assessment</h3>
+            <div id="risk-description" class="risk-text">
+                Moderate risk of being a fake profile
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>Developed by Our Team</p>
+    </footer>
+
+    <script src="result-script.js"></script>
+    <script>
+        function loadResult() {
+            const userData = JSON.parse(localStorage.getItem("latestUserData"));
+
+            if (userData) {
+                // Update the result page with user data
+                document.getElementById("profile-image").src = userData.dp === "yes" ? "/api/placeholder/200/200" : "/api/placeholder/200/200?noimage";
+                document.getElementById("username").textContent = userData.username;
+                document.getElementById("dp-status").textContent = userData.dp === "yes" ? "Verified" : "Not Verified";
+                document.getElementById("posts-status").textContent = `${userData.posts} Posts`;
+                document.getElementById("followers-status").textContent = `${userData.followers} Followers`;
+                document.getElementById("following-status").textContent = `${userData.following} Following`;
+                document.getElementById("login-status").textContent = `${userData.lastLogin} Days Ago`;
+
+                const authenticity = userData.authenticity;
+                const authenticityIndicator = document.getElementById("authenticity-indicator");
+                const authenticityPercentage = document.getElementById("authenticity-percentage");
+                const riskDescription = document.getElementById("risk-description");
+
+                let percentage = 0;
+                let value = 0; // Default value for high risk
+                if (authenticity === "real") {
+                    percentage = 100;
+                    value = 1; // Low risk
+                    riskDescription.textContent = "Low risk of being a fake profile";
+                    riskDescription.style.color = "green";
+                } else if (authenticity === "moderate") {
+                    percentage = 50;
+                    value = 1; // Moderate risk
+                    riskDescription.textContent = "Moderate risk of being a fake profile";
+                    riskDescription.style.color = "orange";
+                } else {
+                    percentage = 0;
+                    riskDescription.textContent = "High risk of being a fake profile";
+                    riskDescription.style.color = "red";
+                }
+
+                authenticityIndicator.style.width = `${percentage}%`;
+                authenticityPercentage.textContent = `${percentage}%`;
+
+                // Check the load variable in localStorage
+                let load = parseInt(localStorage.getItem("load") || "0");
+
+                if (load === 0) {
+                    // Append the user data to the stack in localStorage
+                    const userDataStack = JSON.parse(localStorage.getItem("userData")) || [];
+                    const formattedData = {
+                        Username: userData.username,
+                        Posts: userData.posts,
+                        Following: userData.following,
+                        Followers: userData.followers,
+                        Active_login: userData.lastLogin,
+                        Value: value
+                    };
+                    userDataStack.push(formattedData);
+                    localStorage.setItem("userData", JSON.stringify(userDataStack));
+
+                    // Set load to 1 to indicate data has been added
+                    localStorage.setItem("load", "1");
+                } else {
+                    console.log("Data already added. Skipping duplicate entry.");
+                }
+            } else {
+                alert("No data available. Please calculate profile authenticity first.");
+                navigateTo("instagram.html");
+            }
+        }
+
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        // Reset the load variable when navigating away from the page
+        window.onbeforeunload = function () {
+            localStorage.setItem("load", "0");
+        };
+
+        // Load result on page load
+        window.onload = loadResult;
+    </script>
+</body>
+</html>

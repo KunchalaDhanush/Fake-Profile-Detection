@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Data</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="admin-index.html">Home</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="prediction-results.html">Prediction Results</a></li>
+                <li><a href="login-navigator">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>User Data</h2>
+            <p>View all user-entered data here.</p>
+            <div class="user-data-list" id="user-data-list">
+                <!-- User data will be dynamically loaded here -->
+            </div>
+            <button id="reset-data-btn">Reset Data</button>
+        </section>
+    </main>
+    <script>
+        // Load user data from localStorage
+        function loadUserData() {
+            const userDataList = document.getElementById("user-data-list");
+            const userDataStack = JSON.parse(localStorage.getItem("userData")) || [];
+
+            if (userDataStack.length === 0) {
+                userDataList.innerHTML = "<p>No user data available.</p>";
+                return;
+            }
+
+            userDataList.innerHTML = userDataStack
+                .map((data, index) => `
+                    <div class="user-card">
+                        <p><strong>Entry ${index + 1}:</strong></p>
+                        <p><strong>Username:</strong> ${data.Username}, <strong>Posts:</strong> ${data.Posts}, <strong>Following:</strong> ${data.Following}, <strong>Followers:</strong> ${data.Followers}, <strong>Active Login:</strong> ${data.Active_login} Days Ago, <strong>Value:</strong> ${data.Value}</p>
+                    </div>
+                `)
+                .join("");
+        }
+
+        // Reset all user data
+        function resetUserData() {
+            localStorage.removeItem("userData");
+            document.getElementById("user-data-list").innerHTML = "<p>No user data available.</p>";
+            alert("All user data has been reset.");
+        }
+
+        // Add event listener to reset button
+        document.getElementById("reset-data-btn").addEventListener("click", resetUserData);
+
+        // Call the function to load data on page load
+        window.onload = loadUserData;
+    </script>
+</body>
+</html>

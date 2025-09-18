@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Signup</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .signup-form {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        .signup-form h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .signup-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .signup-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .signup-form button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-form">
+        <h2>User Signup</h2>
+        <input type="text" id="new-username" placeholder="Enter Username">
+        <input type="password" id="new-password" placeholder="Enter Password">
+        <input type="email" id="email" placeholder="Enter Email">
+        <button onclick="submitSignup()">Sign Up</button>
+    </div>
+    <script>
+        function submitSignup() {
+            const username = document.getElementById('new-username').value;
+            const password = document.getElementById('new-password').value;
+            const email = document.getElementById('email').value;
+
+            if (username && password && email) {
+                // Retrieve existing users from localStorage
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+
+                // Check if the username already exists
+                const userExists = users.some(user => user.username === username);
+                if (userExists) {
+                    alert("Username already exists. Please choose a different username.");
+                    return;
+                }
+
+                // Add the new user to the list
+                users.push({ username, password, email });
+
+                // Save the updated users list to localStorage
+                localStorage.setItem('users', JSON.stringify(users));
+
+                alert("Signup successful! Redirecting to login page...");
+                // Redirect to the login page after successful signup
+                window.location.href = 'user-login.html';
+            } else {
+                alert("Please fill in all fields.");
+            }
+        }
+    </script>
+</body>
+</html>

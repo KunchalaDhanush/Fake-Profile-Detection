@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Results</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Prediction Results</h1>
+        <nav>
+            <ul>
+                <li><a href="admin-index.html">Home</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="user-data.html">User Data</a></li>
+                <li><a href="login-navigator.html">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Summary</h2>
+            <p>Total Real Users: <span id="real-user-count">0</span></p>
+            <p>Total Fake Users: <span id="fake-user-count">0</span></p>
+        </section>
+        <section>
+            <h3>Pie Chart: User Distribution</h3>
+            <canvas id="pieChart"></canvas>
+        </section>
+        <section>
+            <h3>Bar Graph: User Activity</h3>
+            <canvas id="barGraph"></canvas>
+        </section>
+        <section>
+            <h3>Line Chart: User Trends</h3>
+            <canvas id="lineChart"></canvas>
+        </section>
+        <div class="results">
+            <p>Total Users: <span id="total-users-result">0</span></p>
+            <p>Real Users: <span id="real-users-result">0</span></p>
+            <p>Fake Users: <span id="fake-users-result">0</span></p>
+            <p>Active Users: <span id="active-users-result">0</span></p>
+        </div>
+        <button id="reset-button">Reset Data</button>
+    </main>
+
+    <script>
+        // Function to load data from localStorage and update the page
+        function loadPredictionResults() {
+            // Retrieve values from localStorage (updated by dashboard)
+            const totalUsers = parseInt(localStorage.getItem("totalUsers") || "0");
+            const realUsers = parseInt(localStorage.getItem("realUsers") || "0");
+            const fakeUsers = parseInt(localStorage.getItem("fakeUsers") || "0");
+            const activeUsers = realUsers; // Active Users is the same as Real Users
+
+            // Update the page with the retrieved values
+            document.getElementById("real-user-count").textContent = realUsers;
+            document.getElementById("fake-user-count").textContent = fakeUsers;
+            document.getElementById("total-users-result").textContent = totalUsers;
+            document.getElementById("real-users-result").textContent = realUsers;
+            document.getElementById("fake-users-result").textContent = fakeUsers;
+            document.getElementById("active-users-result").textContent = activeUsers;
+
+            // Update Pie Chart
+            const pieCtx = document.getElementById('pieChart').getContext('2d');
+            new Chart(pieCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Real Users', 'Fake Users'],
+                    datasets: [{
+                        data: [realUsers, fakeUsers],
+                        backgroundColor: ['#4CAF50', '#F44336']
+                    }]
+                }
+            });
+
+            // Update Bar Graph
+            const barCtx = document.getElementById('barGraph').getContext('2d');
+            new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Total Users', 'Active Users'],
+                    datasets: [{
+                        label: 'User Count',
+                        data: [totalUsers, activeUsers],
+                        backgroundColor: ['#2196F3', '#FFC107']
+                    }]
+                }
+            });
+
+            // Update Line Chart
+            const lineCtx = document.getElementById('lineChart').getContext('2d');
+            new Chart(lineCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Real Users', 'Fake Users', 'Active Users'],
+                    datasets: [{
+                        label: 'User Trends',
+                        data: [realUsers, fakeUsers, activeUsers],
+                        borderColor: '#673AB7',
+                        fill: false
+                    }]
+                }
+            });
+        }
+
+        // Reset button functionality
+        document.getElementById("reset-button").addEventListener("click", () => {
+            // Clear localStorage
+            localStorage.removeItem("totalUsers");
+            localStorage.removeItem("realUsers");
+            localStorage.removeItem("fakeUsers");
+            localStorage.removeItem("activeUsers");
+
+            // Reset displayed values to 0
+            document.getElementById("real-user-count").textContent = 0;
+            document.getElementById("fake-user-count").textContent = 0;
+            document.getElementById("total-users-result").textContent = 0;
+            document.getElementById("real-users-result").textContent = 0;
+            document.getElementById("fake-users-result").textContent = 0;
+            document.getElementById("active-users-result").textContent = 0;
+
+            // Reload charts
+            loadPredictionResults();
+            console.log("All data has been reset.");
+        });
+
+        // Load data when page loads
+        window.onload = loadPredictionResults;
+    </script>
+</body>
+</html>

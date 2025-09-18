@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Navigator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="input-section">
+        <h1>Welcome to Fake Profile Detection</h1>
+        <p>Please select your login type:</p>
+        <div class="platform-selection">
+            <button onclick="navigateTo('user-login.html')">User Login</button>
+            <button onclick="navigateTo('admin-login.html')">Admin Login</button>
+        </div>
+    </div>
+    <script>
+        function navigateTo(page) {
+            // Navigate to the selected login page
+            window.location.href = page;
+        }
+    </script>
+</body>
+</html>
